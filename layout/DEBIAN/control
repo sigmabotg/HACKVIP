@@ -1,0 +1,8 @@
+Package: com.yourname.universalvip
+Name: UniversalVIP
+Version: 1.0.0
+Architecture: iphoneos-arm
+Description: Tweak VIP của bạn
+Author: Tên Bạn <email@example.com>
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000)
