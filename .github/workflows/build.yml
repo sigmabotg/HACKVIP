@@ -1,0 +1,22 @@
+name: Build Dylib
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    name: Build Tweak
+    runs-on: macos-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Theos
+        uses: theos/theos-action@v1
+
+      - name: Build Dylib
+        run: make package FINALPACKAGE=1
+
+      - name: Upload Dylib
+        uses: actions/upload-artifact@v3
+        with:
+          name: UniversalVIP-Dylib
+          path: .theos/obj/debug/**/*.dylib
