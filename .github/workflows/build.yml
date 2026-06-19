@@ -1,0 +1,39 @@
+name: Build Dylib
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    name: Build Tweak
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_REQUIRE_TAP_TRUST: 1
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Cache Theos
+        uses: actions/cache@v4
+        with:
+          path: ~/theos
+          key: theos-${{ runner.os }}-${{ hashFiles('.gitmodules') }}
+          restore-keys: |
+            theos-${{ runner.os }}-
+
+      - name: Setup Theos
+        if: steps.cache-theos.outputs.cache-hit != 'true'
+        uses: Randomblock1/theos-action@main
+
+      - name: Install GNU Make (tăng tốc build)
+        run: |
+          brew install make
+          echo "PATH=$(brew --prefix make)/libexec/gnubin:$PATH" >> $GITHUB_ENV
+
+      - name: Build Dylib
+        run: make package FINALPACKAGE=1
+
+      - name: Upload Dylib
+        uses: actions/upload-artifact@v4
+        with:
+          name: UniversalVIP-Dylib
+          path: packages/*.deb
